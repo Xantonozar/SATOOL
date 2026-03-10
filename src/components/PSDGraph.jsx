@@ -59,6 +59,17 @@ export default function PSDGraph({
     graphView, onGraphViewChange, sieveFormat,
     panWeight,
 }) {
+    const [winWidth, setWinWidth] = React.useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+    React.useEffect(() => {
+        const handleResize = () => setWinWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const isMobile = winWidth < 640;
+    const isSmall = winWidth < 480;
+
     // Pan point: placed half a decade left of the smallest sieve, always at 0% finer
     const panPoint = useMemo(() => {
         if (!tableData || tableData.length === 0 || !(parseFloat(panWeight) > 0)) return null;
@@ -109,22 +120,22 @@ export default function PSDGraph({
             items.push({ key: 'original', label: 'All Data', color: COLORS.original, dash: '', width: 2.5 });
         }
         if (graphView === 'fine' || graphView === 'combined') {
-            items.push({ key: 'fine', label: 'Fine Aggregate (≤4.75mm)', color: COLORS.fine, dash: '', width: 2.5 });
+            items.push({ key: 'fine', label: isSmall ? 'Fine' : 'Fine Aggregate', color: COLORS.fine, dash: '', width: 2.5 });
         }
         if (graphView === 'coarse' || graphView === 'combined') {
-            items.push({ key: 'coarse', label: 'Coarse Aggregate (≥4.75mm)', color: COLORS.coarse, dash: '', width: 2.5 });
+            items.push({ key: 'coarse', label: isSmall ? 'Coarse' : 'Coarse Aggregate', color: COLORS.coarse, dash: '', width: 2.5 });
         }
 
         if (graphView === 'all') {
-            items.push({ key: 'astmUpper', label: 'ASTM Upper Limit', color: COLORS.astmUpper, dash: '4 2', width: 2 });
-            items.push({ key: 'astmLower', label: 'ASTM Lower Limit', color: COLORS.astmLower, dash: '4 2', width: 2 });
-            items.push({ key: 'blend25', label: 'WG Possible — 25%', color: COLORS.blend25, dash: '', width: 1 });
-            items.push({ key: 'blend50', label: 'WG Possible — 50% (Center)', color: COLORS.blend50, dash: '', width: 1 });
-            items.push({ key: 'blend75', label: 'WG Possible — 75%', color: COLORS.blend75, dash: '', width: 1 });
-            if (optimAstmData) items.push({ key: 'optimAstm', label: 'Optimized — ASTM Target', color: COLORS.optimAstm, dash: '', width: 2.5 });
+            items.push({ key: 'astmUpper', label: isSmall ? 'ASTM Upper' : 'ASTM Upper Limit', color: COLORS.astmUpper, dash: '4 2', width: 2 });
+            items.push({ key: 'astmLower', label: isSmall ? 'ASTM Lower' : 'ASTM Lower Limit', color: COLORS.astmLower, dash: '4 2', width: 2 });
+            items.push({ key: 'blend25', label: isSmall ? 'WG 25%' : 'WG Possible — 25%', color: COLORS.blend25, dash: '', width: 1 });
+            items.push({ key: 'blend50', label: isSmall ? 'WG 50%' : 'WG Possible — 50% (Center)', color: COLORS.blend50, dash: '', width: 1 });
+            items.push({ key: 'blend75', label: isSmall ? 'WG 75%' : 'WG Possible — 75%', color: COLORS.blend75, dash: '', width: 1 });
+            if (optimAstmData) items.push({ key: 'optimAstm', label: isSmall ? 'Optim Target' : 'Optimized — ASTM Target', color: COLORS.optimAstm, dash: '', width: 2.5 });
         }
         return items;
-    }, [optimAstmData, graphView]);
+    }, [optimAstmData, graphView, isSmall]);
 
     const xDomain = useMemo(() => {
         if (!tableData || tableData.length === 0) return [0.01, 160];
@@ -160,9 +171,9 @@ export default function PSDGraph({
             </div>
 
             {/* Graph */}
-            <div id={graphId} className="px-4 pt-2 pb-4">
-                <ResponsiveContainer width="100%" height={420}>
-                    <ComposedChart data={chartData} margin={{ top: 10, right: 20, bottom: 40, left: 10 }}>
+            <div id={graphId} className="px-1 sm:px-4 pt-2 pb-4">
+                <ResponsiveContainer width="100%" height={isSmall ? 280 : isMobile ? 320 : 420}>
+                    <ComposedChart data={chartData} margin={{ top: 10, right: 10, bottom: isSmall ? 30 : 40, left: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f4f8" />
 
                         <XAxis
@@ -172,20 +183,20 @@ export default function PSDGraph({
                             type="number"
                             ticks={GRAPH_TICKS}
                             tickFormatter={formatTick}
-                            label={{ value: 'Particle Size (mm) — Log Scale', position: 'insideBottom', offset: -22, style: { fontSize: 11, fill: '#6b7280', fontWeight: 500 } }}
+                            label={!isSmall ? { value: 'Particle Size (mm) — Log Scale', position: 'insideBottom', offset: -22, style: { fontSize: isMobile ? 10 : 11, fill: '#6b7280', fontWeight: 500 } } : undefined}
                             tick={{ fontSize: 9, fill: '#6b7280' }}
                             tickLine={{ stroke: '#e2e8f0' }}
                             axisLine={{ stroke: '#e2e8f0' }}
                         />
                         <YAxis
                             domain={[0, 100]}
-                            ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+                            ticks={[0, 20, 40, 60, 80, 100]}
                             tickFormatter={v => `${v}%`}
-                            label={{ value: '% Finer (Passing)', angle: -90, position: 'insideLeft', offset: 15, style: { fontSize: 11, fill: '#6b7280', fontWeight: 500 } }}
+                            label={!isSmall ? { value: '% Finer', angle: -90, position: 'insideLeft', offset: 15, style: { fontSize: isMobile ? 10 : 11, fill: '#6b7280', fontWeight: 500 } } : undefined}
                             tick={{ fontSize: 10, fill: '#6b7280' }}
                             tickLine={{ stroke: '#e2e8f0' }}
                             axisLine={{ stroke: '#e2e8f0' }}
-                            width={55}
+                            width={isSmall ? 40 : 55}
                         />
 
                         <Tooltip content={<CustomTooltip sieveFormat={sieveFormat} />} />
@@ -223,25 +234,25 @@ export default function PSDGraph({
             </div>
 
             {/* Custom legend */}
-            <div className="px-4 pb-4 flex flex-wrap gap-2">
+            <div className="px-4 pb-4 flex flex-wrap gap-1.5 sm:gap-2">
                 {legendItems.map(item => (
                     <button
                         key={item.key}
                         onClick={() => onToggleCurve(item.key)}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border transition-all duration-150 ${hiddenCurves.has(item.key)
+                        className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs border transition-all duration-150 ${hiddenCurves.has(item.key)
                             ? 'opacity-40 bg-gray-50 border-gray-200 text-gray-400'
-                            : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                            : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 shadow-sm'
                             }`}
                     >
                         <span
-                            className="inline-block rounded-sm"
+                            className="inline-block rounded-sm flex-shrink-0"
                             style={{
-                                width: 20, height: item.width * 1.5 + 1,
+                                width: 16, height: item.width * 1.2 + 1,
                                 backgroundColor: item.color,
                                 opacity: hiddenCurves.has(item.key) ? 0.4 : 1,
                             }}
                         />
-                        {item.label}
+                        <span className="truncate max-w-[120px] sm:max-w-none">{item.label}</span>
                     </button>
                 ))}
             </div>
