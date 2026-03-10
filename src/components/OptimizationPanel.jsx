@@ -60,34 +60,36 @@ export default function OptimizationPanel({
     return (
         <div className="space-y-3">
             {/* Optimize button */}
-            <div className="card px-4 py-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div>
+            <div className="card px-4 py-3 sm:py-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex-1">
                         <h2 className="font-semibold text-gray-900 text-sm">Well-Grade Optimization — ASTM</h2>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                            Redistribute weights to achieve a well-graded mix while keeping total weight fixed at <span className="font-mono font-semibold">{totalWeight.toFixed(1)} g</span>
+                        <p className="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                            Redistribute weights for a well-graded mix at <span className="font-mono font-semibold">{totalWeight.toFixed(1)} g</span>
                         </p>
                     </div>
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex flex-row sm:flex-row gap-2 w-full sm:w-auto">
                         <button
                             onClick={onOptimize}
                             disabled={allLocked || totalWeight === 0}
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
+                            className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
               ${isWellGraded
                                     ? 'bg-green-600 hover:bg-green-700 text-white'
                                     : 'bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white'
                                 }`}
                             title={allLocked ? 'Unlock at least one sieve to optimize' : totalWeight === 0 ? 'Enter weights first' : ''}
                         >
-                            {isWellGraded ? '✅ View Alternatives' : '🔧 Optimize'}
+                            <span className="text-sm sm:text-base">{isWellGraded ? '✅' : '🔧'}</span>
+                            <span className="whitespace-nowrap">{isWellGraded ? 'Alternatives' : 'Optimize'}</span>
                         </button>
                         <button
                             onClick={onFindBestCurve}
                             disabled={allLocked || totalWeight === 0}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl font-semibold text-xs sm:text-sm bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             title="Scan all 21 ASTM band positions and auto-select the curve with the best S-shape"
                         >
-                            🏆 Find Best S-Curve
+                            <span className="text-sm sm:text-base">🏆</span>
+                            <span className="whitespace-nowrap">Best S-Curve</span>
                         </button>
                     </div>
                 </div>
@@ -117,28 +119,28 @@ export default function OptimizationPanel({
             {/* ── BEST CURVE RESULT ─────────────────────────────────────────── */}
             {bestCurveResult && (
                 <div className="card overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50/80 to-orange-50/40">
-                    <div className="px-4 py-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-200">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <span className="text-xl">🏆</span>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 text-sm">Best S-Curve Found</h3>
-                                    <p className="text-xs text-gray-600">
+                    <div className="px-3 sm:px-4 py-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-b border-amber-200">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <span className="text-xl sm:text-2xl flex-shrink-0">🏆</span>
+                                <div className="min-w-0">
+                                    <h3 className="font-bold text-gray-900 text-xs sm:text-sm truncate">Best S-Curve Found</h3>
+                                    <p className="text-[10px] sm:text-xs text-gray-600 truncate">
                                         ASTM {bestCurveResult.best.blendPosition}% ({bestCurveResult.best.label})
-                                        {bestCurveResult.warning && <span className="text-amber-600 ml-2">{bestCurveResult.warning}</span>}
+                                        {bestCurveResult.warning && <span className="text-amber-600 ml-2 block sm:inline">{bestCurveResult.warning}</span>}
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="text-right">
-                                    <div className="text-2xl font-black text-gray-900">{(bestCurveResult.best.score * 100).toFixed(0)}<span className="text-xs font-normal text-gray-500">/100</span></div>
+                            <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-amber-200/50">
+                                <div className="text-left sm:text-right">
+                                    <div className="text-xl sm:text-2xl font-black text-gray-900 leading-none">{(bestCurveResult.best.score * 100).toFixed(0)}<span className="text-[10px] sm:text-xs font-normal text-gray-500">/100</span></div>
                                     <GradeStars grade={bestCurveResult.best.grade} />
                                 </div>
                                 <button
                                     onClick={onApplyBestCurve}
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
+                                    className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
                                 >
-                                    ⬆️ Apply Best
+                                    ⬆️ <span className="sm:inline">Apply Best</span><span className="sm:hidden">Apply</span>
                                 </button>
                             </div>
                         </div>
@@ -155,15 +157,15 @@ export default function OptimizationPanel({
                         </div>
 
                         {/* Grading badges */}
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${bestCurveResult.best.isWellGraded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold ${bestCurveResult.best.isWellGraded ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                 {bestCurveResult.best.isWellGraded ? '✅ Well-Graded' : '❌ Not Well-Graded'}
                             </span>
-                            <span className="px-2 py-0.5 rounded-full text-xs font-mono bg-gray-100 text-gray-700">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-mono bg-gray-100 text-gray-700">
                                 Cᵤ = {fmt(bestCurveResult.best.Cu)} | Cᶜ = {fmt(bestCurveResult.best.Cc)}
                             </span>
-                            <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700">
-                                {bestCurveResult.wellGradedCount} / 21 candidates well-graded
+                            <span className="px-2 py-0.5 rounded-full text-[10px] sm:text-xs bg-blue-100 text-blue-700">
+                                {bestCurveResult.wellGradedCount} / 21 candidates
                             </span>
                         </div>
 
@@ -178,8 +180,8 @@ export default function OptimizationPanel({
                             </button>
 
                             {showAllCandidates && (
-                                <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                    <table className="w-full text-xs">
+                                <div className="overflow-x-auto rounded-lg border border-gray-200 -mx-1 sm:mx-0">
+                                    <table className="w-full text-[10px] sm:text-xs min-w-[600px]">
                                         <thead className="bg-gray-50">
                                             <tr>
                                                 <th className="px-2 py-1.5 text-left font-semibold text-gray-500">Rank</th>
@@ -203,7 +205,7 @@ export default function OptimizationPanel({
                                                 return (
                                                     <tr key={c.blendPosition} className={`${isBest ? 'bg-amber-50 font-semibold' : 'hover:bg-gray-50'}`}>
                                                         <td className="px-2 py-1.5 text-gray-700">{isBest ? '🏆' : `#${idx + 1}`}</td>
-                                                        <td className="px-2 py-1.5 font-mono text-gray-700">{c.blendPosition}% <span className="text-gray-400">({c.label})</span></td>
+                                                        <td className="px-2 py-1.5 font-mono text-gray-700">{c.blendPosition}% <span className="text-gray-400 hidden sm:inline">({c.label})</span></td>
                                                         <td className="px-2 py-1.5 text-right font-mono font-bold">{(c.score * 100).toFixed(0)}</td>
                                                         <td className="px-2 py-1.5 text-center"><GradeStars grade={c.grade} /></td>
                                                         <td className={`px-2 py-1.5 text-center font-mono ${c.breakdown.S1 >= 1 ? 'text-green-600' : 'text-red-500'}`}>{(c.breakdown.S1 * 100).toFixed(0)}</td>
@@ -217,7 +219,7 @@ export default function OptimizationPanel({
                                                         <td className="px-2 py-1.5 text-center">
                                                             <button
                                                                 onClick={() => onApplyOptimized(c.optimRows)}
-                                                                className="px-2 py-0.5 rounded text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium transition-colors"
+                                                                className="px-2 py-0.5 rounded text-[10px] sm:text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium transition-colors"
                                                             >
                                                                 Apply
                                                             </button>

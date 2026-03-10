@@ -63,15 +63,15 @@ export default function SieveTable({
 
             {/* Table */}
             <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[580px]">
+                <table className="w-full text-sm">
                     <thead>
                         <tr className="border-b border-gray-100">
-                            <th className="px-2 py-2 text-xs font-semibold text-gray-400 uppercase w-8 text-center">🔒</th>
-                            <th className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase text-left">Sieve</th>
-                            <th className="table-th">Weight (g)</th>
-                            <th className="table-th">% Ret</th>
-                            <th className="table-th">Cum %</th>
-                            <th className="table-th text-blue-600">% Finer</th>
+                            <th className="px-2 py-2 text-[10px] font-semibold text-gray-400 uppercase w-8 text-center">🔒</th>
+                            <th className="px-2 sm:px-3 py-2 text-[10px] font-semibold text-gray-500 uppercase text-left">Sieve</th>
+                            <th className="table-th px-2 sm:px-3 text-[10px]">Weight (g)</th>
+                            <th className="table-th px-2 sm:px-3 text-[10px] hidden sm:table-cell">% Ret</th>
+                            <th className="table-th px-2 sm:px-3 text-[10px] hidden md:table-cell">Cum %</th>
+                            <th className="table-th px-2 sm:px-3 text-[10px] text-blue-600">% Finer</th>
                             <th className="px-2 py-2 w-8"></th>
                         </tr>
                     </thead>
@@ -91,11 +91,11 @@ export default function SieveTable({
                             <td className="px-2 py-2 text-center text-amber-300">
                                 <span className="text-xs">🪣</span>
                             </td>
-                            <td className="px-3 py-2">
-                                <span className="text-sm font-medium text-gray-700">Pan</span>
-                                <span className="text-xs text-gray-400 ml-1.5">(&lt; smallest sieve)</span>
+                            <td className="px-2 sm:px-3 py-2">
+                                <span className="text-xs sm:text-sm font-medium text-gray-700">Pan</span>
+                                <span className="text-[10px] text-gray-400 ml-1.5 hidden xs:inline">(&lt; smallest sieve)</span>
                             </td>
-                            <td className="px-3 py-1.5">
+                            <td className="px-2 sm:px-3 py-1.5">
                                 <input
                                     type="number"
                                     min="0"
@@ -104,21 +104,21 @@ export default function SieveTable({
                                     placeholder="0"
                                     onChange={e => onPanWeightChange(e.target.value)}
                                     onFocus={e => e.target.select()}
-                                    className="w-20 px-2 py-1 text-sm font-mono text-right rounded border bg-white border-amber-200 hover:border-amber-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-colors duration-150"
+                                    className="w-16 sm:w-20 px-1 sm:px-2 py-1 text-xs sm:text-sm font-mono text-right rounded border bg-white border-amber-200 hover:border-amber-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/20 transition-colors duration-150"
                                 />
                             </td>
-                            <td className="table-td text-gray-500">{totalWeight > 0 ? ((panWeight / totalWeight) * 100).toFixed(2) : '0.00'}</td>
-                            <td className="table-td text-gray-500">100.00</td>
-                            <td className="table-td font-semibold text-blue-700">0.00</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-500 hidden sm:table-cell">{totalWeight > 0 ? ((panWeight / totalWeight) * 100).toFixed(2) : '0.00'}</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-500 hidden md:table-cell">100.00</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs font-semibold text-blue-700">0.00</td>
                             <td className="px-2"></td>
                         </tr>
                         {/* Total row */}
                         <tr className="bg-blue-50/50 border-t-2 border-blue-100">
-                            <td colSpan={2} className="px-3 py-2 text-xs font-bold text-gray-600 uppercase">Total</td>
-                            <td className="table-td font-bold text-gray-900">{totalWeight.toFixed(2)}</td>
-                            <td className="table-td font-bold">100.00</td>
-                            <td className="table-td text-gray-400">—</td>
-                            <td className="table-td text-gray-400">—</td>
+                            <td colSpan={2} className="px-2 sm:px-3 py-2 text-[10px] font-bold text-gray-600 uppercase">Total</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs font-bold text-gray-900">{totalWeight.toFixed(2)}</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs font-bold hidden sm:table-cell">100.00</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-400 hidden md:table-cell">—</td>
+                            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-400">—</td>
                             <td className="px-2"></td>
                         </tr>
                     </tbody>
@@ -144,21 +144,21 @@ function SieveRow({ row, sieveFormat, onWeightChange, onToggleLock, onRemove }) 
             <td className="px-2 py-1.5 text-center">
                 <button
                     onClick={() => onToggleLock(row.id)}
-                    className={`text-lg transition-all duration-150 hover:scale-110 ${row.locked ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
+                    className={`text-base sm:text-lg transition-all duration-150 hover:scale-110 ${row.locked ? 'opacity-100' : 'opacity-30 hover:opacity-60'}`}
                     title={row.locked ? 'Unlock this sieve' : 'Lock this sieve'}
                 >
                     {row.locked ? '🔒' : '🔓'}
                 </button>
             </td>
 
-            <td className="px-3 py-1.5">
-                <span className="font-mono text-sm font-bold text-gray-800">{label}</span>
+            <td className="px-2 sm:px-3 py-1.5">
+                <span className="font-mono text-xs sm:text-sm font-bold text-gray-800">{label}</span>
                 {sieveFormat === 'us' && (
-                    <span className="text-xs text-gray-400 ml-1.5">({mmLabel} mm)</span>
+                    <span className="text-[10px] text-gray-400 ml-1 hidden xs:inline">({mmLabel})</span>
                 )}
             </td>
 
-            <td className="px-3 py-1.5">
+            <td className="px-2 sm:px-3 py-1.5">
                 <input
                     type="number"
                     min="0"
@@ -168,7 +168,7 @@ function SieveRow({ row, sieveFormat, onWeightChange, onToggleLock, onRemove }) 
                     disabled={row.locked}
                     onChange={e => onWeightChange(row.id, parseFloat(e.target.value) || 0)}
                     onFocus={e => e.target.select()}
-                    className={`w-20 px-2 py-1 text-sm font-mono text-right rounded border transition-colors duration-150
+                    className={`w-16 sm:w-20 px-1 sm:px-2 py-1 text-xs sm:text-sm font-mono text-right rounded border transition-colors duration-150
             ${row.locked
                             ? 'bg-amber-50 text-amber-700 border-amber-200 cursor-not-allowed'
                             : 'bg-white border-gray-200 hover:border-blue-300 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/20'
@@ -176,12 +176,14 @@ function SieveRow({ row, sieveFormat, onWeightChange, onToggleLock, onRemove }) 
                 />
             </td>
 
-            <td className="table-td text-gray-600">{row.pctRetained?.toFixed(2) ?? '0.00'}</td>
-            <td className="table-td text-gray-600">{row.cumRetained?.toFixed(2) ?? '0.00'}</td>
-            <td className="table-td font-semibold text-blue-700">{row.pctFiner?.toFixed(2) ?? '100.00'}</td>
+            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-600 hidden sm:table-cell">{row.pctRetained?.toFixed(2) ?? '0.00'}</td>
+            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs text-gray-600 hidden md:table-cell">{row.cumRetained?.toFixed(2) ?? '0.00'}</td>
+            <td className="table-td px-2 sm:px-3 text-[11px] sm:text-xs font-semibold text-blue-700">{row.pctFiner?.toFixed(2) ?? '100.00'}</td>
 
             <td className="px-2 py-1.5 text-center">
-                <button onClick={() => onRemove(row.id)} className="btn-danger" title="Remove sieve">✕</button>
+                <button onClick={() => onRemove(row.id)} className="btn-danger p-1 sm:p-1.5" title="Remove sieve">
+                    <span className="text-[10px] sm:text-xs">✕</span>
+                </button>
             </td>
         </tr>
     );
